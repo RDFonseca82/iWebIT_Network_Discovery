@@ -12,7 +12,7 @@ Agente Linux para descoberta de dispositivos de rede usando ARP Scan + Nmap.
 - Logs e cache local
 
 ## Instalação
-git clone https://github.com/RDFonseca82/iWebIT_Network_Discovery.git /opt/iWebIT_Network_Discovery
+sudo git clone https://github.com/RDFonseca82/iWebIT_Network_Discovery.git /opt/iWebIT_Network_Discovery
 
 cd /opt/iWebIT_Network_Discovery
 

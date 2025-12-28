@@ -1,35 +1,53 @@
 import time
 import logging
+import configparser
 
 from networks import load_networks
 from arp_scan import scan as arp_scan
 from nmap_scan import enrich
 from hostname import resolve
-from cache import save
 from logger import setup
+from sender import send
+
+CONFIG_FILE = "/opt/iWebIT_Network_Discovery/config/agent.conf"
+NETWORKS_FILE = "/opt/iWebIT_Network_Discovery/config/networks.conf"
 
 setup()
 
-NETWORKS_FILE = "/opt/iWebIT_Network_Discovery/config/networks.conf"
-SCAN_INTERVAL = 3600
+config = configparser.ConfigParser()
+config.read(CONFIG_FILE)
+
+IDCOMPANY = config.getint("Agent", "IdCompany")
+SCAN_INTERVAL = config.getint("Agent", "ScanInterval")
+
+if IDCOMPANY <= 0:
+    logging.error("IdCompany not configured. Agent will not run.")
+    exit(1)
 
 while True:
     logging.info("Starting network discovery scan")
-    results = []
+
+    devices_payload = []
 
     for network in load_networks(NETWORKS_FILE):
         devices = arp_scan(network)
 
         for device in devices:
-            device["hostname"] = resolve(device["ip"])
-            device.update(enrich(device["ip"]))
+            device_payload = {
+                "IP": device["ip"],
+                "MAC": device["mac"],
+                "Vendor": device.get("vendor"),
+                "Hostname": resolve(device["ip"]),
+                "OS": enrich(device["ip"]).get("os"),
+                "Network": network
+            }
 
-        results.append({
-            "network": network,
-            "devices": devices
-        })
+            devices_payload.append(device_payload)
 
-    save(results)
-    logging.info("Network discovery scan completed")
+    if devices_payload:
+        send(IDCOMPANY, devices_payload)
+    else:
+        logging.info("No devices discovered, nothing sent")
 
+    logging.info("Scan completed")
     time.sleep(SCAN_INTERVAL)

@@ -16,12 +16,27 @@ sudo git clone https://github.com/RDFonseca82/iWebIT_Network_Discovery.git /opt/
 
 cd /opt/iWebIT_Network_Discovery
 
+sudo chmod +x install.sh
+
 sudo ./install.sh
 
 ## Desinstalação
 sudo systemctl stop iwebit_network_discovery.service
+
 sudo systemctl disable iwebit_network_discovery.timer
+
 sudo rm -rf /opt/iWebIT_Network_Discovery
+
 sudo rm /etc/systemd/system/iwebit_network_discovery.service
+
 sudo rm /etc/systemd/system/iwebit_network_discovery.timer
+
 sudo systemctl daemon-reload
+
+## Reboot
+sudo systemctl daemon-reload
+
+sudo systemctl restart iwebit_network_discovery.timer
+
+sudo systemctl restart iwebit_network_discovery.service
+

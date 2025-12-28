@@ -1,0 +1,11 @@
+[Unit]
+Description=iWebIT Network Discovery Agent
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/iWebIT_Network_Discovery/agent/agent.py
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target

@@ -13,7 +13,7 @@ if [ -z "$IDCOMPANY" ]; then
 fi
 
 apt update
-apt install -y arp-scan nmap git python3
+apt install -y arp-scan nmap git python3 python3-pip
 
 INSTALL_PATH="/opt/iWebIT_Network_Discovery"
 
@@ -23,6 +23,9 @@ if [ -d "$INSTALL_PATH" ]; then
 fi
 
 git clone https://github.com/TEU_USER/iWebIT_Network_Discovery.git "$INSTALL_PATH"
+
+# Instalar dependências Python
+pip3 install -r "$INSTALL_PATH/requirements.txt"
 
 # Guardar IdCompany no config
 sed -i "s/^IdCompany=.*/IdCompany=$IDCOMPANY/" \
